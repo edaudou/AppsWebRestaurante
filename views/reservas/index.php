@@ -18,6 +18,7 @@
 			<!-- Botones para editar o eliminar la reserva (si se necesita) -->
 			<a class="btn btn-primary" href="<?php echo ROOT_PATH; ?>reservas/edit/<?php echo $item['id']; ?>">Editar</a>
 			<a class="btn btn-danger" href="<?php echo ROOT_PATH; ?>reservas/delete/<?php echo $item['id']; ?>" onclick="return confirm('¿Estás seguro de que deseas eliminar esta reserva?');">Eliminar</a>
+			
 		</div>
 	<?php endforeach; ?>
 </div>

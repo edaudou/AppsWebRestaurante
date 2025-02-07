@@ -1,6 +1,6 @@
 <html>
 <head>
-	<title>Shareboard</title>
+	<title>Restaurante</title>
 	<link rel="stylesheet" href="<?php echo ROOT_PATH; ?>assets/css/bootstrap.css">
 	<link rel="stylesheet" href="<?php echo ROOT_PATH; ?>assets/css/style.css">
 </head>
