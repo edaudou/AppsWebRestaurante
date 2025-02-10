@@ -24,7 +24,9 @@ class UserModel extends Model{
                 // Verificar si se realizó el registro
                 if ($this->lastInsertId()) {
                     // Redirigir
+                    Messages::setMsg('Registro exitoso', 'success');
                     header('Location: '.ROOT_URL.'users/login');
+
                     exit;
                 }
             } else {
@@ -63,14 +65,21 @@ class UserModel extends Model{
                         "email" => $row['email']
                     );
                     header('Location: '.ROOT_URL.'reservas');
+                    Messages::setMsg('Bienvenido', 'success');
                     exit;
+                    
                 } else {
                     echo 'Datos de acceso incorrectos.';
+                    Messages::setMsg('Datos de acceso incorrectos', 'error');
                 }
             } else {
-                echo 'Por favor, completa todos los campos.';
+                Messages::setMsg('Por favor, completa todos los campos', 'error');
+
             }
         }
+        
         return;
+
+
     }
 }

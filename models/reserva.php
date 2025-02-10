@@ -28,6 +28,7 @@ class ReservaModel extends Model {
                 // Ejecutar la consulta
 
                 $this->execute();
+                Messages::setMsg('Reserva creada exitosamente', 'success');
 
                 // Verificar si la reserva fue creada exitosamente
                 if ($this->lastInsertId()) {
@@ -40,8 +41,9 @@ class ReservaModel extends Model {
                 }
             } else {
                 
+                Messages::setMsg('Por favor, completa todos los campos', 'error');
 
-                echo 'Por favor, completa todos los campos.';
+                
             }
             return;
         }
@@ -54,7 +56,8 @@ class ReservaModel extends Model {
         
                 // Ejecutar la consulta
                 $this->execute();
-        
+                Messages::setMsg('Reserva eliminada exitosamente', 'success');
+                return true; // La reserva fue eliminada
             }
             return false; // El ID no es válido
         }
@@ -78,14 +81,26 @@ class ReservaModel extends Model {
                 $this->bind(':reservation_time', $data['reservation_time']);
                 $this->bind(':num_people', $data['num_people']);
                 $this->bind(':id', $id);
-        
+                
                 // Ejecutar la consulta
                 $this->execute();
-        
+            
+                // poner un mensaje de éxito
+
+                Messages::setMsg('Reserva actualizada exitosamente', 'success');
                 return true;
             }
         
             return false; // Si los campos están vacíos o no se cumple alguna condición
+        }
+        public function getFechasOcupadas() {
+            $this->query('SELECT reservation_date FROM reservations');
+            $rows = $this->resultSet();
+            $fechas_ocupadas = array();
+            foreach ($rows as $row) {
+                $fechas_ocupadas[] = $row['reservation_date'];
+            }
+            return $fechas_ocupadas;
         }
         
         

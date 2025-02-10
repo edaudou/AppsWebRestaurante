@@ -1,16 +1,16 @@
-Datos validados:
 Array
 (
-    [name] => Alumno
-    [email] => a@a.com
-    [password] => Alumno1
-    [submit] => Submit
+    [reservation_date] => 2025-02-13
+    [reservation_time] => 14:56
+    [num_people] => 4
+    [submit] => Reservar
 )
 Datos validados:
 Array
 (
-    [name] => Alumno
-    [email] => a@a.com
-    [password] => Alumno1
-    [submit] => Submit
+    [reservation_date] => 2025-02-13
+    [reservation_time] => 14:56
+    [num_people] => 4
+    [submit] => Reservar
 )
+Reserva creada exitosamente
