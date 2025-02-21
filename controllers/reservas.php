@@ -1,8 +1,10 @@
 <?php
 class Reservas extends Controller{
 	protected function Index(){
+		$searchQuery = isset($_GET['search']) ? trim($_GET['search']) : ''; 
+		file_put_contents('debug.log', "Valor de búsqueda recibido en controlador: '$searchQuery'\n", FILE_APPEND);
 		$viewmodel = new ReservaModel();
-		$this->returnView($viewmodel->Index(), true);
+		$this->returnView($viewmodel->search($searchQuery), true);
 	}
 
 	protected function add(){

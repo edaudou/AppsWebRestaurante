@@ -1,16 +1,22 @@
-Array
-(
-    [reservation_date] => 2025-02-13
-    [reservation_time] => 14:56
-    [num_people] => 4
-    [submit] => Reservar
-)
-Datos validados:
-Array
-(
-    [reservation_date] => 2025-02-13
-    [reservation_time] => 14:56
-    [num_people] => 4
-    [submit] => Reservar
-)
-Reserva creada exitosamente
+Consulta SQL: SELECT * FROM reservations WHERE 
+                          reservation_date LIKE :query OR 
+                          reservation_time LIKE :query OR 
+                          num_people LIKE :query 
+                          ORDER BY create_date DESC con valor: %%
+Consulta SQL: SELECT * FROM reservations WHERE 
+                          reservation_date LIKE :query OR 
+                          reservation_time LIKE :query OR 
+                          num_people LIKE :query 
+                          ORDER BY create_date DESC con valor: %%
+Valor de búsqueda recibido en controlador: ''
+Consulta SQL: SELECT * FROM reservations WHERE 
+                          reservation_date LIKE :query OR 
+                          reservation_time LIKE :query OR 
+                          num_people LIKE :query 
+                          ORDER BY create_date DESC con valor: %%
+Valor de búsqueda recibido en controlador: ''
+Valor de búsqueda recibido en controlador: ''
+Valor de búsqueda recibido en controlador: ''
+Valor de búsqueda recibido en controlador: ''
+Valor de búsqueda recibido en controlador: ''
+Valor de búsqueda recibido en controlador: ''
