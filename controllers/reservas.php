@@ -18,6 +18,14 @@ class Reservas extends Controller{
 		if(!isset($_SESSION['is_logged_in'])){
 			header('Location: '.ROOT_URL.'reservas');
 		}
+	// 	$reservasModel = new ReservaModel();
+    // $usersModel = new UserModel();
+    // $tablesModel = new TableModel();
+
+    // $data = [
+    //     'users' => $usersModel->getAllUsers(),
+    //     'tables' => $tablesModel->getAvailableTables()
+    // ];
 		file_put_contents('debug.log', print_r($_POST, true));
 		$viewmodel = new ReservaModel();
 		$this->returnView($viewmodel->add(), true);
