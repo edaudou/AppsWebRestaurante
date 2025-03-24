@@ -1,12 +1,19 @@
 <?php
+require_once 'models/tables.php';
+
 class Reservas extends Controller{
-	protected function Index(){
-		$searchQuery = isset($_GET['search']) ? trim($_GET['search']) : ''; 
-		file_put_contents('debug.log', "Valor de búsqueda recibido en controlador: '$searchQuery'\n", FILE_APPEND);
-		$viewmodel = new ReservaModel();
-		$this->returnView($viewmodel->search($searchQuery), true);
-	}
-	public function searchReservations() {
+    
+	
+	protected function Index()
+    {
+        $searchQuery = isset($_GET['search']) ? trim($_GET['search']) : '';
+        file_put_contents('debug.log', "Valor de búsqueda recibido en controlador: '$searchQuery'\n", FILE_APPEND);
+        
+        $viewmodel = new ReservaModel();
+        $this->returnView($viewmodel->search($searchQuery), true);
+    }
+	public function searchReservations()
+    {
         $query = isset($_POST['search']) ? trim($_POST['search']) : '';
         $reservasModel = new ReservaModel();
         $reservas = $reservasModel->getReservations($query);
@@ -14,22 +21,33 @@ class Reservas extends Controller{
         echo json_encode($reservas);
         exit;
     }
-	protected function add(){
-		if(!isset($_SESSION['is_logged_in'])){
-			header('Location: '.ROOT_URL.'reservas');
-		}
-	// 	$reservasModel = new ReservaModel();
-    // $usersModel = new UserModel();
-    // $tablesModel = new TableModel();
+    protected function add()
+    {
+        if (!isset($_SESSION['is_logged_in'])) {
+            header('Location: ' . ROOT_URL . 'reservas');
+            exit;
+        }
 
-    // $data = [
-    //     'users' => $usersModel->getAllUsers(),
-    //     'tables' => $tablesModel->getAvailableTables()
-    // ];
-		file_put_contents('debug.log', print_r($_POST, true));
-		$viewmodel = new ReservaModel();
-		$this->returnView($viewmodel->add(), true);
-	}
+        // Cargar modelos de usuarios y mesas
+        $usersModel = new UserModel();
+        $tablesModel = new TableModel();
+
+        $viewmodel = new ReservaModel();
+
+        // Obtener usuarios y mesas disponibles
+        $data = [
+            'users' => $usersModel->Index(),
+            'tables' => $tablesModel->getAvailableTables()
+        ];
+
+        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+            $viewmodel->add();
+            header('Location: ' . ROOT_URL . 'reservas');
+            exit;
+        }
+
+        $this->returnView($data, true);
+    }
 	protected function delete() {
 		if (!isset($_SESSION['is_logged_in'])) {
 			header('Location: ' . ROOT_URL . 'reservas');
@@ -58,19 +76,27 @@ class Reservas extends Controller{
 		header('Location: ' . ROOT_URL . 'reservas');
 		exit;
 	}
-	protected function edit() {
-    if (!isset($_SESSION['is_logged_in'])) {
-        header('Location: ' . ROOT_URL . 'reservas');
-        exit;
-    }
+    protected function edit()
+    {
+        if (!isset($_SESSION['is_logged_in'])) {
+            header('Location: ' . ROOT_URL . 'reservas');
+            exit;
+        }
 
-    // Obtén el ID de la reserva desde la URL
-	$id = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
+        $id = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
+        if (!$id) {
+            $_SESSION['message'] = 'ID de reserva no válido.';
+            header('Location: ' . ROOT_URL . 'reservas');
+            exit;
+        }
 
-    if ($id) {
+        // Cargar modelos de usuarios y mesas
+        $usersModel = new UserModel();
+        $tablesModel = new TableModel();
+
         $viewmodel = new ReservaModel();
+        $reservation = $viewmodel->getById($id);
 
-        // Si se envió el formulario, procesar la actualización
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $result = $viewmodel->update($id, $_POST);
 
@@ -83,14 +109,12 @@ class Reservas extends Controller{
             }
         }
 
-        // Obtener los datos de la reserva para mostrarlos en el formulario
-        $reservation = $viewmodel->getById($id);
-        $this->returnView($reservation, true);
-    } else {
-        $_SESSION['message'] = 'ID de reserva no válido.';
-        header('Location: ' . ROOT_URL . 'reservas');
-        exit;
-    }
-}
+        $data = [
+            'reservation' => $reservation,
+            'users' => $usersModel->Index(),
+            'tables' => $tablesModel->getAvailableTables()
+        ];
 
+        $this->returnView($data, true);
+    }
 }

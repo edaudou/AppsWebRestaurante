@@ -1,26 +1,22 @@
 <div>
-	<a class="btn btn-success btn-share" href="<?php echo ROOT_PATH; ?>reservas/add">Crear Reserva</a>
-	<!-- Barra de búsqueda -->
-	<form method="GET" action="<?php echo ROOT_PATH; ?>reservas">
-        <input type="text" name="search" placeholder="Buscar reserva..." class="form-control" value="<?php echo isset($_GET['search']) ? $_GET['search'] : ''; ?>" />
-		<button type="submit" class="btn btn-primary">Buscar</button>
-	</form>
-	<?php foreach ($viewmodel as $item) : ?>
-        <div class="well">
-            <h3>Fecha: <?php echo $item['reservation_date']; ?></h3>
-            <small>Hora: <?php echo $item['reservation_time']; ?></small>
-            <hr />
-            <p><strong>Número de Personas:</strong> <?php echo $item['num_people']; ?></p>
-            <br />
-            <a class="btn btn-primary" href="<?php echo ROOT_PATH; ?>reservas/edit/<?php echo $item['id']; ?>">Editar</a>
-            <a class="btn btn-danger" href="<?php echo ROOT_PATH; ?>reservas/delete/<?php echo $item['id']; ?>" onclick="return confirm('¿Estás seguro de que deseas eliminar esta reserva?');">Eliminar</a>
-        </div>
-    <?php endforeach; ?>
-    <div>
+    <a class="btn btn-success btn-share" href="<?php echo ROOT_PATH; ?>reservas/add">Crear Reserva</a>
+
+    <!-- Barra de búsqueda con AJAX -->
     <input type="text" id="searchReserva" placeholder="Buscar reserva..." class="form-control" />
 
+    <!-- Resultados de búsqueda -->
     <div id="reservaResults">
-        <!-- Aquí se mostrarán los resultados de la búsqueda -->
+        <?php foreach ($viewmodel as $item) : ?>
+            <div class="well">
+                <h3>Fecha: <?php echo $item['reservation_date']; ?></h3>
+                <small>Hora: <?php echo $item['reservation_time']; ?></small>
+                <p><strong>Número de Personas:</strong> <?php echo $item['num_people']; ?></p>
+                <p><strong>Mesa:</strong> <?php echo $item['table_number']; ?></p>
+                <p><strong>Usuario:</strong> <?php echo $item['user_name']; ?></p>
+                <a class="btn btn-primary" href="<?php echo ROOT_PATH; ?>reservas/edit/<?php echo $item['id']; ?>">Editar</a>
+                <a class="btn btn-danger" href="<?php echo ROOT_PATH; ?>reservas/delete/<?php echo $item['id']; ?>" onclick="return confirm('¿Estás seguro de eliminar esta reserva?');">Eliminar</a>
+            </div>
+        <?php endforeach; ?>
     </div>
 </div>
 
@@ -41,8 +37,10 @@ document.getElementById('searchReserva').addEventListener('keyup', function() {
                 reservas.forEach(reserva => {
                     output += `<div class="well">
                         <h3>Fecha: ${reserva.reservation_date}</h3>
-                        <small>Hora: ${reserva.reservation_time} | Personas: ${reserva.num_people}</small>
-                        <hr />
+                        <small>Hora: ${reserva.reservation_time}</small>
+                        <p><strong>Número de Personas:</strong> ${reserva.num_people}</p>
+                        <p><strong>Mesa:</strong> ${reserva.table_number}</p>
+                        <p><strong>Usuario:</strong> ${reserva.user_name}</p>
                         <a class="btn btn-primary" href="<?php echo ROOT_PATH; ?>reservas/edit?id=${reserva.id}">Editar</a>
                         <a class="btn btn-danger" href="<?php echo ROOT_PATH; ?>reservas/delete?id=${reserva.id}" onclick="return confirm('¿Estás seguro de eliminar esta reserva?');">Eliminar</a>
                     </div>`;
@@ -58,5 +56,4 @@ document.getElementById('searchReserva').addEventListener('keyup', function() {
     xhr.send('search=' + searchQuery);
 });
 </script>
-
 </div>

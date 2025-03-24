@@ -4,10 +4,11 @@
   <title>Restaurante</title>
   <link rel="stylesheet" href="<?php echo ROOT_PATH; ?>assets/css/bootstrap.css">
   <link rel="stylesheet" href="<?php echo ROOT_PATH; ?>assets/css/style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 
 <body>
-  
+
 <nav class="navbarHotel">
     <div class="container">
         <div class="navbar-header">
@@ -35,15 +36,17 @@
 
                 <!-- Mostrar diferente contenido según sesión iniciada -->
                 <?php if (isset($_SESSION['is_logged_in'])): ?>
-                    <!-- Usuario autenticado: Mostrar su imagen -->
+                    <!-- Usuario autenticado: Mostrar dropdown con imagen -->
                     <li class="dropdown">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+                        <a href="#" class="dropdown-toggle user-dropdown" role="button">
                             <img src="/restaurante/assets/img/<?php echo $_SESSION['user_data']['profile_image'] ?? 'user.png'; ?>" 
                                  alt="Usuario" class="user-icon">
                         </a>
                         <ul class="dropdown-menu">
-                            <li><a href="<?php echo ROOT_URL; ?>">Bienvenido <?php echo $_SESSION['user_data']['name']; ?></a></li>
-                            <li><a href="<?php echo ROOT_URL; ?>users/logout">Cerrar sesión</a></li>
+                            <li><a href="<?php echo ROOT_URL; ?>usuarios/perfil"><i class="fas fa-user"></i> Ver perfil</a></li>
+                            <li><a href="<?php echo ROOT_URL; ?>mesas"><i class="fas fa-table"></i> Gestión de mesas</a></li>
+                            <li class="divider"></li>
+                            <li><a href="<?php echo ROOT_URL; ?>users/logout"><i class="fas fa-sign-out-alt"></i> Cerrar sesión</a></li>
                         </ul>
                     </li>
                 <?php else: ?>
@@ -57,15 +60,23 @@
 </nav>
 
   <div class="container">
-
     <div class="row">
       <?php Messages::display(); ?>
-
       <?php require($view); ?>
     </div>
-
   </div><!-- /.container -->
 
-</body>
+<!-- CSS para activar el dropdown en hover -->
+<style>
+  .dropdown:hover .dropdown-menu {
+    display: block;
+  }
+  .user-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+  }
+</style>
 
+</body>
 </html>

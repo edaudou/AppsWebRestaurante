@@ -3,85 +3,75 @@ class ReservaModel extends Model
 {
     public function Index()
     {
-        // Consulta todas las reservas ordenadas por fecha de creación de forma descendente
-        $this->query('SELECT * FROM reservations ORDER BY create_date DESC');
-        $rows = $this->resultSet();
-        return $rows;
+        $this->query('SELECT r.*, u.name AS user_name, t.table_number 
+                      FROM reservations r 
+                      JOIN users u ON r.user_id = u.id
+                      JOIN tables t ON r.table_id = t.id
+                      ORDER BY r.create_date DESC');
+        return $this->resultSet();
     }
-    public function getReservations($query = '') {
+    public function getReservations($query = '')
+    {
         if (!empty($query)) {
-            $sql = "SELECT * FROM reservations WHERE reservation_date LIKE :query 
-                    OR reservation_time LIKE :query 
-                    OR CAST(num_people AS CHAR) LIKE :query 
-                    ORDER BY create_date DESC";
+            $sql = "SELECT r.*, u.name AS user_name, t.table_number 
+                    FROM reservations r
+                    JOIN users u ON r.user_id = u.id
+                    JOIN tables t ON r.table_id = t.id
+                    WHERE r.reservation_date LIKE :query 
+                       OR r.reservation_time LIKE :query 
+                       OR CAST(r.num_people AS CHAR) LIKE :query 
+                       OR u.name LIKE :query
+                       OR t.table_number LIKE :query
+                    ORDER BY r.create_date DESC";
             $this->query($sql);
             $this->bind(':query', "%$query%");
         } else {
-            $this->query("SELECT * FROM reservations ORDER BY reservation_date DESC");
+            $this->query("SELECT r.*, u.name AS user_name, t.table_number 
+                          FROM reservations r
+                          JOIN users u ON r.user_id = u.id
+                          JOIN tables t ON r.table_id = t.id
+                          ORDER BY r.reservation_date DESC");
         }
         return $this->resultSet();
     }
 
     public function search($query)
     {
-        if (!empty($query)) {
-            $sql = "SELECT * FROM reservations WHERE 
-            reservation_date LIKE :query OR 
-            reservation_time LIKE :query OR 
-            CAST(num_people AS CHAR) LIKE :query 
-            ORDER BY create_date DESC";
-
-
-            file_put_contents('debug.log', "Consulta SQL ejecutada: $sql con valor: '%$query%'\n", FILE_APPEND);
-            $this->query($sql);
-            $this->bind(':query', "%$query%");
-        } else {
-            // Si no hay búsqueda, traer todas las reservas
-            $this->query('SELECT * FROM reservations ORDER BY reservation_date DESC');
-        }
-
-        return $this->resultSet();
+        return $this->getReservations($query);
     }
     public function add()
     {
-        // Sanitizar datos del formulario
         $post = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
-        file_put_contents('debug.log', print_r($post, true));
+
         if (isset($post['submit']) && $post['submit']) {
-            // Validar que todos los campos requeridos estén presentes
-            if (
-                !empty($post['reservation_date']) &&
+            if (!empty($post['reservation_date']) &&
                 !empty($post['reservation_time']) &&
-                !empty($post['num_people'])
-            ) {
-                file_put_contents('debug.log', "Datos validados:\n" . print_r($post, true), FILE_APPEND);
-                // Insertar datos en la tabla 'reservations'
-                $this->query('INSERT INTO reservations (user_id, reservation_date, reservation_time, num_people) VALUES (:user_id, :reservation_date, :reservation_time, :num_people)');
-                $this->bind(':user_id', 1); // Usuario logueado
+                !empty($post['num_people']) &&
+                !empty($post['table_id']) &&
+                !empty($post['user_id'])) {
+
+                $this->query('INSERT INTO reservations (user_id, table_id, reservation_date, reservation_time, num_people, special_request) 
+                              VALUES (:user_id, :table_id, :reservation_date, :reservation_time, :num_people, :special_request)');
+                $this->bind(':user_id', $post['user_id']);
+                $this->bind(':table_id', $post['table_id']);
                 $this->bind(':reservation_date', $post['reservation_date']);
                 $this->bind(':reservation_time', $post['reservation_time']);
                 $this->bind(':num_people', $post['num_people']);
-                // Ejecutar la consulta
+                $this->bind(':special_request', $post['special_request'] ?? null);
 
                 $this->execute();
-                Messages::setMsg('Reserva creada exitosamente', 'success');
 
-                // Verificar si la reserva fue creada exitosamente
                 if ($this->lastInsertId()) {
-                    file_put_contents('debug.log', "Reserva creada exitosamente\n", FILE_APPEND);
-                    // Redirigir a la página de reservas
+                    Messages::setMsg('Reserva creada exitosamente', 'success');
                     header('Location: ' . ROOT_URL . 'reservas');
                     exit;
                 }
             } else {
-                file_put_contents('debug.log', "Error al insertar en la base de datos\n", FILE_APPEND);
+                Messages::setMsg('Por favor, completa todos los campos', 'error');
             }
-        } else {
-
-            Messages::setMsg('Por favor, completa todos los campos', 'error');
         }
-        return;
     }
+
     public function delete($id)
     {
         // Verifica que el ID sea válido
@@ -99,46 +89,48 @@ class ReservaModel extends Model
     }
     public function getById($id)
     {
-        $this->query('SELECT * FROM reservations WHERE id = :id');
+        $this->query('SELECT r.*, u.name AS user_name, t.table_number 
+                      FROM reservations r
+                      JOIN users u ON r.user_id = u.id
+                      JOIN tables t ON r.table_id = t.id
+                      WHERE r.id = :id');
         $this->bind(':id', $id);
-        return $this->single(); // Devuelve solo un registro
+        return $this->single();
     }
     //Modificar reserva
     public function update($id, $data)
     {
-        // Sanitizar datos del formulario
         $data = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
 
-        if (
-            !empty($data['reservation_date']) &&
+        if (!empty($data['reservation_date']) &&
             !empty($data['reservation_time']) &&
-            !empty($data['num_people'])
-        ) {
-            $this->query('UPDATE reservations SET reservation_date = :reservation_date, reservation_time = :reservation_time, num_people = :num_people WHERE id = :id');
+            !empty($data['num_people']) &&
+            !empty($data['table_id']) &&
+            !empty($data['user_id'])) {
+
+            $this->query('UPDATE reservations SET reservation_date = :reservation_date, reservation_time = :reservation_time, 
+                          num_people = :num_people, special_request = :special_request, 
+                          table_id = :table_id, user_id = :user_id WHERE id = :id');
             $this->bind(':reservation_date', $data['reservation_date']);
             $this->bind(':reservation_time', $data['reservation_time']);
             $this->bind(':num_people', $data['num_people']);
+            $this->bind(':special_request', $data['special_request'] ?? null);
+            $this->bind(':table_id', $data['table_id']);
+            $this->bind(':user_id', $data['user_id']);
             $this->bind(':id', $id);
 
-            // Ejecutar la consulta
             $this->execute();
-
-            // poner un mensaje de éxito
-
             Messages::setMsg('Reserva actualizada exitosamente', 'success');
             return true;
         }
 
-        return false; // Si los campos están vacíos o no se cumple alguna condición
+        return false;
     }
+
     public function getFechasOcupadas()
     {
         $this->query('SELECT reservation_date FROM reservations');
         $rows = $this->resultSet();
-        $fechas_ocupadas = array();
-        foreach ($rows as $row) {
-            $fechas_ocupadas[] = $row['reservation_date'];
-        }
-        return $fechas_ocupadas;
+        return array_column($rows, 'reservation_date');
     }
 }
