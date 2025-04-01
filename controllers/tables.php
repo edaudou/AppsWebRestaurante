@@ -1,10 +1,11 @@
 <?php
+// require_once 'models/tables.php';
 class Tables extends Controller {
     
     // Mostrar todas las mesas
     protected function Index() {
-        $tableModel = new TableModel();
-        $tables = $tableModel->getAllTables();
+        $viewModel = new TableModel();
+        $tables = $viewModel->getAllTables();
         $this->returnView($tables, true);
     }
 
@@ -21,8 +22,8 @@ class Tables extends Controller {
                 'status' => $_POST['status']
             ];
 
-            $tableModel = new TableModel();
-            if ($tableModel->addTable($data)) {
+            $viewModel = new TableModel();
+            if ($viewModel->addTable($data)) {
                 header('Location: ' . ROOT_URL . 'tables');
             } else {
                 die('Error al agregar la mesa');

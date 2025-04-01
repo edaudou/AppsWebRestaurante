@@ -13,10 +13,12 @@ require('classes/Model.php');
 require('controllers/home.php');
 require('controllers/reservas.php');
 require('controllers/users.php');
+require('controllers/tables.php');
 
 require('models/home.php');
 require('models/reserva.php');
 require('models/user.php');
+require('models/tables.php');
 
 $bootstrap = new Bootstrap($_GET);
 $controller = $bootstrap->createController();

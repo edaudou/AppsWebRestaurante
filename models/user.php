@@ -31,6 +31,14 @@ class UserModel extends Model{
         return $this->execute();
     }
 
+    // Actualizar foto de perfil
+    public function updateProfileImage($id, $imagePath) {
+        $this->query("UPDATE users SET profile_image = :profile_image WHERE id = :id");
+        $this->bind(':profile_image', $imagePath);
+        $this->bind(':id', $id);
+        return $this->execute();
+    }
+    
     public function deleteUser($id) {
         $this->query("DELETE FROM users WHERE id = :id");
         $this->bind(':id', $id);

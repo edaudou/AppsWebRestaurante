@@ -39,12 +39,12 @@
                     <!-- Usuario autenticado: Mostrar dropdown con imagen -->
                     <li class="dropdown">
                         <a href="#" class="dropdown-toggle user-dropdown" role="button">
-                            <img src="/restaurante/assets/img/<?php echo $_SESSION['user_data']['profile_image'] ?? 'user.png'; ?>" 
+                            <img src="/restaurante/assets/img/<?php  echo $viewmodel['profile_image'] ?? 'user.png'; ?>" 
                                  alt="Usuario" class="user-icon">
                         </a>
                         <ul class="dropdown-menu">
-                            <li><a href="<?php echo ROOT_URL; ?>usuarios/perfil"><i class="fas fa-user"></i> Ver perfil</a></li>
-                            <li><a href="<?php echo ROOT_URL; ?>mesas"><i class="fas fa-table"></i> Gestión de mesas</a></li>
+                            <li><a href="<?php echo ROOT_URL; ?>users/perfil"><i class="fas fa-user"></i> Ver perfil</a></li>
+                            <li><a href="<?php echo ROOT_URL; ?>tables"><i class="fas fa-table"></i> Gestión de mesas</a></li>
                             <li class="divider"></li>
                             <li><a href="<?php echo ROOT_URL; ?>users/logout"><i class="fas fa-sign-out-alt"></i> Cerrar sesión</a></li>
                         </ul>
@@ -65,6 +65,11 @@
       <?php require($view); ?>
     </div>
   </div><!-- /.container -->
+                </div>
+                <video autoplay muted loop id="myVideo">
+  <source src="assets/video/restaurant.mp4" type="video/mp4">
+</video>
+
 
 <!-- CSS para activar el dropdown en hover -->
 <style>
