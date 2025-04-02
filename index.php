@@ -18,7 +18,7 @@ require('controllers/tables.php');
 require('models/home.php');
 require('models/reserva.php');
 require('models/user.php');
-require('models/tables.php');
+require_once('models/tables.php');
 
 $bootstrap = new Bootstrap($_GET);
 $controller = $bootstrap->createController();

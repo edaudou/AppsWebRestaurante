@@ -45,6 +45,7 @@
                         <ul class="dropdown-menu">
                             <li><a href="<?php echo ROOT_URL; ?>users/perfil"><i class="fas fa-user"></i> Ver perfil</a></li>
                             <li><a href="<?php echo ROOT_URL; ?>tables"><i class="fas fa-table"></i> Gestión de mesas</a></li>
+                            <li><a href="<?php echo ROOT_URL; ?>users"><i class="fas fa-user"></i> Gestión de usuarios</a></li>
                             <li class="divider"></li>
                             <li><a href="<?php echo ROOT_URL; ?>users/logout"><i class="fas fa-sign-out-alt"></i> Cerrar sesión</a></li>
                         </ul>

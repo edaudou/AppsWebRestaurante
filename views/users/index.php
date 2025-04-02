@@ -1,28 +1,6 @@
 <div>
-	<a class="btn btn-success btn-share" href="<?php echo ROOT_PATH; ?>users/register">Crear Usuario</a>
-
-	<!-- Barra de búsqueda -->
-	<form method="GET" action="<?php echo ROOT_PATH; ?>users">
-        <input type="text" name="search" placeholder="Buscar usuario..." class="form-control" value="<?php echo isset($_GET['search']) ? $_GET['search'] : ''; ?>" />
-		<button type="submit" class="btn btn-primary">Buscar</button>
-	</form>
-
-	<?php foreach ($viewmodel as $item) : ?>
-        <div class="well">
-            <h3>Nombre: <?php echo $item['name']; ?></h3>
-            <small>Email: <?php echo $item['email']; ?></small>
-            <hr />
-            <br />
-            <a class="btn btn-primary" href="<?php echo ROOT_PATH; ?>users/edit/<?php echo $item['id']; ?>">Editar</a>
-            <a class="btn btn-danger" href="<?php echo ROOT_PATH; ?>users/delete/<?php echo $item['id']; ?>" onclick="return confirm('¿Estás seguro de que deseas eliminar este usuario?');">Eliminar</a>
-        </div>
-    <?php endforeach; ?>
-</div>
-<div>
-    <a class="btn btn-success btn-share" href="<?php echo ROOT_PATH; ?>users/register">Crear Usuario</a>
-
+    <!-- Barra de búsqueda -->
     <input type="text" id="searchUser" placeholder="Buscar usuario..." class="form-control" />
-
     <div id="userResults">
         <!-- Aquí se mostrarán los resultados de la búsqueda -->
     </div>
@@ -44,6 +22,7 @@ document.getElementById('searchUser').addEventListener('keyup', function() {
             if (users.length > 0) {
                 users.forEach(user => {
                     output += `<div class="well">
+                        <img src="/restaurante/assets/img/${user.profile_image ? user.profile_image : 'user.png'}" alt="Perfil" class="profile-img" />
                         <h3>${user.name}</h3>
                         <small>${user.email}</small>
                         <hr />
@@ -62,3 +41,18 @@ document.getElementById('searchUser').addEventListener('keyup', function() {
     xhr.send('search=' + searchQuery);
 });
 </script>
+
+<div>
+    <a class="btn btn-success btn-share" href="<?php echo ROOT_PATH; ?>users/register">Crear Usuario</a>
+
+    <?php foreach ($viewmodel as $item) : ?>
+        <div class="well">
+            <img src="/restaurante/assets/img/<?php echo $item['profile_image'] ?? 'user.png'; ?>" alt="Perfil" class="profile-img" />
+            <h3>Nombre: <?php echo $item['name']; ?></h3>
+            <small>Email: <?php echo $item['email']; ?></small>
+            <hr />
+            <a class="btn btn-primary" href="<?php echo ROOT_PATH; ?>users/edit/<?php echo $item['id']; ?>">Editar</a>
+            <a class="btn btn-danger" href="<?php echo ROOT_PATH; ?>users/delete/<?php echo $item['id']; ?>" onclick="return confirm('¿Estás seguro de que deseas eliminar este usuario?');">Eliminar</a>
+        </div>
+    <?php endforeach; ?>
+</div>

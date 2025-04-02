@@ -1,5 +1,4 @@
 <?php
-// Assuming you have a function to get the reservation by ID and delete it
 include_once '../../models/reserva.php';
 
 if (isset($_GET['id'])) {

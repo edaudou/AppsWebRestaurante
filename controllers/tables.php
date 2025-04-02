@@ -1,18 +1,16 @@
 <?php
-// require_once 'models/tables.php';
 class Tables extends Controller {
-    
-    // Mostrar todas las mesas
-    protected function Index() {
-        $viewModel = new TableModel();
-        $tables = $viewModel->getAllTables();
+
+    protected function Index(): void {
+        $tableModel = new TablesModel();
+        $tables = $tableModel->getAllTables();
         $this->returnView($tables, true);
     }
 
-    // Agregar una nueva mesa
     protected function Add() {
         if (!isset($_SESSION['is_logged_in'])) {
             header('Location: ' . ROOT_URL . 'tables');
+            exit;
         }
 
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
@@ -22,8 +20,8 @@ class Tables extends Controller {
                 'status' => $_POST['status']
             ];
 
-            $viewModel = new TableModel();
-            if ($viewModel->addTable($data)) {
+            $tableModel = new TablesModel();
+            if ($tableModel->addTable($data)) {
                 header('Location: ' . ROOT_URL . 'tables');
             } else {
                 die('Error al agregar la mesa');
@@ -33,13 +31,13 @@ class Tables extends Controller {
         $this->returnView(null, true);
     }
 
-    // Editar una mesa
     protected function Edit($id) {
         if (!isset($_SESSION['is_logged_in'])) {
             header('Location: ' . ROOT_URL . 'tables');
+            exit;
         }
 
-        $tableModel = new TableModel();
+        $tableModel = new TablesModel();
 
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $data = [
@@ -60,13 +58,13 @@ class Tables extends Controller {
         $this->returnView($table, true);
     }
 
-    // Eliminar una mesa
     protected function Delete($id) {
         if (!isset($_SESSION['is_logged_in'])) {
             header('Location: ' . ROOT_URL . 'tables');
+            exit;
         }
 
-        $tableModel = new TableModel();
+        $tableModel = new TablesModel();
         if ($tableModel->deleteTable($id)) {
             header('Location: ' . ROOT_URL . 'tables');
         } else {
@@ -74,3 +72,4 @@ class Tables extends Controller {
         }
     }
 }
+?>

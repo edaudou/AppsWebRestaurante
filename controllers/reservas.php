@@ -30,7 +30,7 @@ class Reservas extends Controller{
 
         // Cargar modelos de usuarios y mesas
         $usersModel = new UserModel();
-        $tablesModel = new TableModel();
+        $tablesModel = new TablesModel();
 
         $viewmodel = new ReservaModel();
 
@@ -92,7 +92,7 @@ class Reservas extends Controller{
 
         // Cargar modelos de usuarios y mesas
         $usersModel = new UserModel();
-        $tablesModel = new TableModel();
+        $tablesModel = new TablesModel();
 
         $viewmodel = new ReservaModel();
         $reservation = $viewmodel->getById($id);
