@@ -1,15 +1,15 @@
 <?php
 // Assuming you have a function to get the reservation by ID and delete it
-include_once '../../models/reserva.php';
+include_once '../../models/tables.php';
 
 if (isset($_GET['id'])) {
     $id = $_GET['id'];
-    $reserva = getReservaById($id);
+    $table = getTableById($id);
 
     if ($reserva) {
         if (isset($_POST['confirm'])) {
-            deleteReserva($id);
-            header('Location: /restaurante/views/reservas/index.php');
+            deleteTable($id);
+            header('Location: /restaurante/views/tables/index.php');
             exit();
         }
     } else {

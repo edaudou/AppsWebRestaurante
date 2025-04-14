@@ -52,8 +52,8 @@
                     </li>
                 <?php else: ?>
                     <!-- No autenticado: Mostrar Login y Registro -->
-                    <li><a href="<?php echo ROOT_URL; ?>users/login">Iniciar sesión</a></li>
-                    <li><a href="<?php echo ROOT_URL; ?>users/register">Registrarse</a></li>
+                    <li><a class="logandReg" href="<?php echo ROOT_URL; ?>users/login">Iniciar sesión</a></li>
+                    <li><a class="logandReg" href="<?php echo ROOT_URL; ?>users/register">Registrarse</a></li>
                 <?php endif; ?>
             </ul>
         </div><!--/.nav-collapse -->

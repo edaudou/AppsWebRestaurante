@@ -42,7 +42,9 @@
     background-color: #f0f0f0;
     
 }
-
+.logandReg{
+    color: beige;
+}
 /* Style the video: 100% width and height to cover the entire window */
 #myVideo {
     position: fixed;
