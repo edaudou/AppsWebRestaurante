@@ -2,81 +2,64 @@
 class Tables extends Controller
 {
 
-    protected function Index(): void
+    protected function Index()
     {
-        $tableModel = new TablesModel();
-        $tables = $tableModel->getAllTables();
-        $this->returnView($tables, true);
+        $viewmodel = new TablesModel();
+        $this->returnView($viewmodel->Index(), true);
     }
 
-    protected function Add()
+    protected function add()
     {
         if (!isset($_SESSION['is_logged_in'])) {
-            header('Location: ' . ROOT_URL . 'tables');
-            exit;
-        }
-        $error = null;
-
-        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-            $data = [
-                'table_number' => $_POST['table_number'],
-                'capacity' => $_POST['capacity'],
-                'status' => $_POST['status'],
-                'location' => $_POST['location'],
-            ];
-
-            $tableModel = new TablesModel();
-            if ($tableModel->tableNumberExists($data['table_number'])) {
-                $error = "Ya existe una mesa con ese número.";
-            } elseif ($tableModel->addTable($data)) {
-                $_SESSION['message'] = 'Tabla Añadida exitosamente.';
-
-                header('Location: ' . ROOT_URL . 'tables');
-                exit;
-            } else {
-                $error = "Error al agregar la mesa.";
-            }
-        }
-
-        $this->returnView(['error' => $error], true);
-    }
-
-    protected function edit()
-    {
-        if (!isset($_SESSION['is_logged_in'])) {
-            header('Location: ' . ROOT_URL . 'tables');
-            exit;
-        }
-
-        $id = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
-        if (!$id) {
-            $_SESSION['message'] = 'ID de mesa no válido.';
             header('Location: ' . ROOT_URL . 'tables');
             exit;
         }
 
         $model = new TablesModel();
-        $table = $model->getTableById($id);
 
-        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-            $data = [
-                'id' => $id,
-                'table_number' => $_POST['table_number'],
-                'capacity' => $_POST['capacity'],
-                'location' => $_POST['location'],
-                'status' => $_POST['status']
-            ];
-
-            if ($model->updateTable($data)) {
-                $_SESSION['message'] = 'Mesa actualizada exitosamente.';
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            if ($model->add()) {
                 header('Location: ' . ROOT_URL . 'tables');
                 exit;
-            } else {
-                $_SESSION['message'] = 'Error al actualizar la mesa.';
             }
         }
 
-        $this->returnView($table, true);
+        $this->returnView([], true);
+    }
+
+    protected function edit()
+    {
+        if (!isset($_SESSION['is_logged_in'])) {
+            $_SESSION['error_msg'] = 'Debes iniciar sesión para editar mesas';
+            header('Location: ' . ROOT_URL . 'tables');
+            exit;
+        }
+    
+        $id = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
+        if (!$id) {
+            $_SESSION['error_msg'] = 'ID de mesa no válido';
+            header('Location: ' . ROOT_URL . 'tables');
+            exit;
+        }
+    
+        $model = new TablesModel();
+        $table = $model->getById($id);
+    
+        if (!$table) {
+            $_SESSION['error_msg'] = 'Mesa no encontrada';
+            header('Location: ' . ROOT_URL . 'tables');
+            exit;
+        }
+    
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            if ($model->update($id, $_POST)) {
+                $_SESSION['success_msg'] = 'Mesa actualizada correctamente';
+                header('Location: ' . ROOT_URL . 'tables');
+                exit;
+            }
+        }
+    
+        $this->returnView(['table' => $table], true);
     }
 
 

@@ -1,34 +1,72 @@
 <?php
 class TablesModel extends Model
 {
-
-    public function getAllTables()
+    public function Index()
     {
-        $this->query("SELECT * FROM tables ORDER BY table_number ASC");
+        $this->query('SELECT * FROM tables ORDER BY table_number ASC');
         return $this->resultSet();
     }
-
     public function getAvailableTables()
     {
-        $this->query("SELECT * FROM tables WHERE status = 'Disponible' ORDER BY table_number ASC");
+        $this->query('SELECT * FROM tables WHERE status = "disponible" ORDER BY table_number ASC');
         return $this->resultSet();
     }
 
-    public function getTableById($id)
+    public function getById($id)
     {
-        $this->query("SELECT * FROM tables WHERE id = :id");
+        $this->query('SELECT * FROM tables WHERE id = :id');
         $this->bind(':id', $id);
         return $this->single();
     }
 
-    public function addTable($data)
+    public function update($id, $data)
     {
-        $this->query("INSERT INTO tables (table_number, capacity, status, location) VALUES (:table_number, :capacity, :status, :location)");
+        // Validar datos
+        if (empty($data['table_number']) || empty($data['capacity']) || empty($data['status'])) {
+            Messages::setMsg('Por favor completa todos los campos', 'error');
+            return false;
+        }
+    
+        $this->query('UPDATE tables SET table_number = :table_number, 
+                      capacity = :capacity, status = :status WHERE id = :id');
+        
         $this->bind(':table_number', $data['table_number']);
         $this->bind(':capacity', $data['capacity']);
         $this->bind(':status', $data['status']);
-        $this->bind(':location', $data['location']);
-        return $this->execute();
+        $this->bind(':id', $id);
+    
+        if ($this->execute()) {
+            Messages::setMsg('Mesa actualizada exitosamente', 'success');
+            return true;
+        }
+        
+        Messages::setMsg('Error al actualizar la mesa', 'error');
+        return false;
+    }
+
+    public function add()
+    {
+        $post = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
+
+        if ($post && !empty($post['table_number']) && !empty($post['capacity']) && !empty($post['location']) && !empty($post['status'])) {
+            $this->query('INSERT INTO tables (table_number, capacity, location, status) 
+                          VALUES (:table_number, :capacity, :location, :status)');
+            $this->bind(':table_number', $post['table_number']);
+            $this->bind(':capacity', $post['capacity']);
+            $this->bind(':location', $post['location']);
+            $this->bind(':status', $post['status']);
+
+            $this->execute();
+
+            if ($this->lastInsertId()) {
+                Messages::setMsg('Mesa añadida exitosamente', 'success');
+                return true;
+            }
+        } else {
+            Messages::setMsg('Por favor, completa todos los campos.', 'error');
+        }
+
+        return false;
     }
     public function tableNumberExists($table_number)
     {
@@ -36,18 +74,6 @@ class TablesModel extends Model
         $this->bind(':table_number', $table_number);
         $result = $this->single();
         return $result['total'] > 0;
-    }
-
-
-    public function updateTable($data)
-    {
-        $this->query("UPDATE tables SET table_number = :table_number, capacity = :capacity, location = :location, status = :status WHERE id = :id");
-        $this->bind(':id', $data['id']);
-        $this->bind(':table_number', $data['table_number']);
-        $this->bind(':capacity', $data['capacity']);
-        $this->bind(':location', $data['location']);
-        $this->bind(':status', $data['status']);
-        return $this->execute();
     }
 
 

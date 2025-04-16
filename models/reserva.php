@@ -39,38 +39,38 @@ class ReservaModel extends Model
     {
         return $this->getReservations($query);
     }
-    public function add()
+    public function add($data)
     {
-        $post = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
-
-        if (isset($post['submit']) && $post['submit']) {
-            if (!empty($post['reservation_date']) &&
-                !empty($post['reservation_time']) &&
-                !empty($post['num_people']) &&
-                !empty($post['table_id']) &&
-                !empty($post['user_id'])) {
-
-                $this->query('INSERT INTO reservations (user_id, table_id, reservation_date, reservation_time, num_people, special_request) 
-                              VALUES (:user_id, :table_id, :reservation_date, :reservation_time, :num_people, :special_request)');
-                $this->bind(':user_id', $post['user_id']);
-                $this->bind(':table_id', $post['table_id']);
-                $this->bind(':reservation_date', $post['reservation_date']);
-                $this->bind(':reservation_time', $post['reservation_time']);
-                $this->bind(':num_people', $post['num_people']);
-                $this->bind(':special_request', $post['special_request'] ?? null);
-
-                $this->execute();
-
-                if ($this->lastInsertId()) {
-                    Messages::setMsg('Reserva creada exitosamente', 'success');
-                    header('Location: ' . ROOT_URL . 'reservas');
-                    exit;
-                }
-            } else {
-                Messages::setMsg('Por favor, completa todos los campos', 'error');
+        if (!empty($data['reservation_date']) &&
+            !empty($data['reservation_time']) &&
+            !empty($data['num_people']) &&
+            !empty($data['table_id']) &&
+            !empty($data['user_id'])) {
+    
+            $this->query('INSERT INTO reservations (user_id, table_id, reservation_date, reservation_time, num_people, special_request) 
+                          VALUES (:user_id, :table_id, :reservation_date, :reservation_time, :num_people, :special_request)');
+            $this->bind(':user_id', $data['user_id']);
+            $this->bind(':table_id', $data['table_id']);
+            $this->bind(':reservation_date', $data['reservation_date']);
+            $this->bind(':reservation_time', $data['reservation_time']);
+            $this->bind(':num_people', $data['num_people']);
+            $this->bind(':special_request', $data['special_request'] ?? null);
+    
+            $this->execute();
+    
+            if ($this->lastInsertId()) {
+                Messages::setMsg('Reserva creada exitosamente', 'success');
+                return true;
             }
+        } else {
+            Messages::setMsg('Por favor, completa todos los campos', 'error');
         }
+    
+        return false;
     }
+    
+    
+    
 
     public function delete($id)
     {
@@ -101,13 +101,13 @@ class ReservaModel extends Model
     public function update($id, $data)
     {
         $data = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
-
+    
         if (!empty($data['reservation_date']) &&
             !empty($data['reservation_time']) &&
             !empty($data['num_people']) &&
             !empty($data['table_id']) &&
             !empty($data['user_id'])) {
-
+    
             $this->query('UPDATE reservations SET reservation_date = :reservation_date, reservation_time = :reservation_time, 
                           num_people = :num_people, special_request = :special_request, 
                           table_id = :table_id, user_id = :user_id WHERE id = :id');
@@ -118,14 +118,15 @@ class ReservaModel extends Model
             $this->bind(':table_id', $data['table_id']);
             $this->bind(':user_id', $data['user_id']);
             $this->bind(':id', $id);
-
+    
             $this->execute();
             Messages::setMsg('Reserva actualizada exitosamente', 'success');
             return true;
         }
-
+    
         return false;
     }
+    
 
     public function getFechasOcupadas()
     {
