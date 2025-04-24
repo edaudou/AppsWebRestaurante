@@ -2,66 +2,105 @@
 class Tables extends Controller
 {
 
-    protected function Index()
+    protected function Index(): void
     {
-        $viewmodel = new TablesModel();
-        $this->returnView($viewmodel->Index(), true);
+        $tableModel = new TableModel();
+        $tables = $tableModel->getAllTables();
+        $this->returnView($tables, true);
     }
 
+    // protected function Add()
+    // {
+    //     if (!isset($_SESSION['is_logged_in'])) {
+    //         header('Location: ' . ROOT_URL . 'tables');
+    //         exit;
+    //     }
+    //     $error = null;
+
+    //     if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    //         $data = [
+    //             'table_number' => $_POST['table_number'],
+    //             'capacity' => $_POST['capacity'],
+    //             'status' => $_POST['status'],
+    //             'location' => $_POST['location'],
+    //         ];
+
+    //         $tableModel = new TableModel();
+    //         if ($tableModel->tableNumberExists($data['table_number'])) {
+    //             $error = "Ya existe una mesa con ese número.";
+    //         } elseif ($tableModel->addTable($data)) {
+    //             $_SESSION['message'] = 'Tabla Añadida exitosamente.';
+
+    //             header('Location: ' . ROOT_URL . 'tables');
+    //             exit;
+    //         } else {
+    //             $error = "Error al agregar la mesa.";
+    //         }
+    //     }
+
+    //     $this->returnView(['error' => $error], true);
+    // }
     protected function add()
     {
         if (!isset($_SESSION['is_logged_in'])) {
             header('Location: ' . ROOT_URL . 'tables');
             exit;
         }
-
-        $model = new TablesModel();
-
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            if ($model->add()) {
+    
+        $viewmodel = new TableModel();
+    
+        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+            if ($viewmodel->add()) {
                 header('Location: ' . ROOT_URL . 'tables');
                 exit;
             }
         }
-
+    
         $this->returnView([], true);
     }
-
+    
+	public function searchTables()
+    {
+        $query = isset($_POST['search']) ? trim($_POST['search']) : '';
+        $reservasModel = new TableModel();
+        $reservas = $reservasModel->getTables($query);
+        
+        echo json_encode($reservas);
+        exit;
+    }
+    
     protected function edit()
     {
         if (!isset($_SESSION['is_logged_in'])) {
-            $_SESSION['error_msg'] = 'Debes iniciar sesión para editar mesas';
             header('Location: ' . ROOT_URL . 'tables');
             exit;
         }
     
         $id = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
         if (!$id) {
-            $_SESSION['error_msg'] = 'ID de mesa no válido';
+            $_SESSION['message'] = 'ID de mesa no válido.';
             header('Location: ' . ROOT_URL . 'tables');
             exit;
         }
     
-        $model = new TablesModel();
-        $table = $model->getById($id);
+        $model = new TableModel();
+        $table = $model->getTableById($id);
     
-        if (!$table) {
-            $_SESSION['error_msg'] = 'Mesa no encontrada';
-            header('Location: ' . ROOT_URL . 'tables');
-            exit;
-        }
+        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+            $result = $model->update($id, $_POST);
     
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            if ($model->update($id, $_POST)) {
-                $_SESSION['success_msg'] = 'Mesa actualizada correctamente';
+            if ($result) {
+                $_SESSION['message'] = 'Mesa actualizada exitosamente.';
                 header('Location: ' . ROOT_URL . 'tables');
                 exit;
+            } else {
+                $_SESSION['message'] = 'Error al actualizar la mesa. Verifica los datos.';
             }
         }
     
         $this->returnView(['table' => $table], true);
     }
-
+    
 
 
 	protected function delete() {
@@ -73,7 +112,7 @@ class Tables extends Controller
         $id = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
     
         if ($id) {
-            $model = new TablesModel();
+            $model = new TableModel();
             $result = $model->deleteTable($id);
     
             if ($result) {

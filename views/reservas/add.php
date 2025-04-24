@@ -3,50 +3,51 @@
     <h3 class="panel-title">Crear una Reserva</h3>
   </div>
   <div class="panel-body">
-    <form method="POST" action="">
-      <div class="form-group">
+  <form method="POST" action="">
+    <div class="form-group">
         <label>Usuario:</label>
-        <select name="user_id" class="form-control" required>
-          <?php foreach ($viewmodel['users'] as $user) : ?>
-            <option value="<?php echo $user['id']; ?>">
-              <?php echo htmlspecialchars($user['name']); ?>
-            </option>
-          <?php endforeach; ?>
+        <select name="user_id" class="form-control">
+            <?php foreach ($viewmodel['users'] as $user) : ?>
+                <option value="<?php echo $user['id']; ?>">
+                    <?php echo $user['name']; ?>
+                </option>
+            <?php endforeach; ?>
         </select>
-      </div>
+    </div>
 
-      <div class="form-group">
+    <div class="form-group">
         <label>Mesa:</label>
-        <select name="table_id" class="form-control" required>
-          <?php foreach ($viewmodel['tables'] as $table) : ?>
-            <option value="<?php echo $table['id']; ?>">
-              Mesa <?php echo htmlspecialchars($table['table_number']); ?> - Capacidad: <?php echo $table['capacity']; ?>
-            </option>
-          <?php endforeach; ?>
+        <select name="table_id" class="form-control">
+            <?php foreach ($viewmodel['tables'] as $table) : ?>
+                <option value="<?php echo $table['id']; ?>">
+                    Mesa <?php echo $table['table_number']; ?> - Capacidad: <?php echo $table['capacity']; ?>
+                </option>
+            <?php endforeach; ?>
         </select>
-      </div>
+    </div>
 
-      <div class="form-group">
+    <div class="form-group">
         <label>Fecha de reserva:</label>
         <input type="date" name="reservation_date" class="form-control" required>
-      </div>
+    </div>
 
-      <div class="form-group">
+    <div class="form-group">
         <label>Hora de reserva:</label>
         <input type="time" name="reservation_time" class="form-control" required>
-      </div>
+    </div>
 
-      <div class="form-group">
+    <div class="form-group">
         <label>Número de personas:</label>
-        <input type="number" name="num_people" class="form-control" min="1" required>
-      </div>
+        <input type="number" name="num_people" class="form-control" required>
+    </div>
 
-      <div class="form-group">
+    <div class="form-group">
         <label>Petición especial:</label>
         <textarea name="special_request" class="form-control"></textarea>
-      </div>
+    </div>
 
-      <button type="submit" name="submit" class="btn btn-primary">Guardar Reserva</button>
-    </form>
+    <button type="submit" class="btn btn-primary">Guardar Reserva</button>
+</form>
+
   </div>
 </div>

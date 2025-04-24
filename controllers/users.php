@@ -19,11 +19,9 @@ class Users extends Controller{
         $user = $userModel->getUserById($id);
 
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-            $data = [
-                'name' => $_POST['name'],
-                'email' => $_POST['email']
-            ];
-            $userModel->updateUser($id, $data);
+            $name = $_POST['name'];
+            $email = $_POST['email'];
+            $userModel->updateUser($id, $name,$email);
             $_SESSION['message'] = 'Perfil actualizado correctamente.';
             header('Location: ' . ROOT_URL . 'usuarios/perfil');
             exit;
@@ -55,6 +53,7 @@ class Users extends Controller{
 	protected function login(){
 		$viewmodel = new UserModel();
 		$this->returnView($viewmodel->login(), true);
+        // $_SESSION['is_logged_in'] = true;
 	}
     public function searchUsers() {
         $query = isset($_POST['search']) ? trim($_POST['search']) : '';

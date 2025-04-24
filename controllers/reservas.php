@@ -1,5 +1,4 @@
 <?php
-require_once 'models/tables.php';
 
 class Reservas extends Controller{
     
@@ -27,29 +26,27 @@ class Reservas extends Controller{
             header('Location: ' . ROOT_URL . 'reservas');
             exit;
         }
-    
-        // Modelos de usuarios y mesas
+
+        // Cargar modelos de usuarios y mesas
         $usersModel = new UserModel();
-        $tablesModel = new TablesModel();
-        $reservaModel = new ReservaModel();
-    
+        $tablesModel = new TableModel();
+
+        $viewmodel = new ReservaModel();
+
+        // Obtener usuarios y mesas disponibles
         $data = [
             'users' => $usersModel->Index(),
-            'tables' => $tablesModel->getAvailableTables()
+            'tables' => $tablesModel->getAllTables()
         ];
-    
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $post = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
-    
-            if ($reservaModel->add($post)) {
-                header('Location: ' . ROOT_URL . 'reservas');
-                exit;
-            }
+
+        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+            $viewmodel->add();
+            header('Location: ' . ROOT_URL . 'reservas');
+            exit;
         }
-    
+
         $this->returnView($data, true);
     }
-    
 	protected function delete() {
 		if (!isset($_SESSION['is_logged_in'])) {
 			header('Location: ' . ROOT_URL . 'reservas');
@@ -78,49 +75,45 @@ class Reservas extends Controller{
 		header('Location: ' . ROOT_URL . 'reservas');
 		exit;
 	}
-    protected function edit() {
+    protected function edit()
+    {
         if (!isset($_SESSION['is_logged_in'])) {
-            header('Location: ' . ROOT_URL . 'reservations');
+            header('Location: ' . ROOT_URL . 'reservas');
             exit;
         }
-    
+
         $id = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
         if (!$id) {
-            $_SESSION['error_msg'] = 'ID de reservación inválido';
-            header('Location: ' . ROOT_URL . 'reservations');
+            $_SESSION['message'] = 'ID de reserva no válido.';
+            header('Location: ' . ROOT_URL . 'reservas');
             exit;
         }
-    
-        $reservationModel = new ReservaModel();
-        $reservation = $reservationModel->getById($id);
-        
-        if (!$reservation) {
-            $_SESSION['error_msg'] = 'Reservación no encontrada';
-            header('Location: ' . ROOT_URL . 'reservations');
-            exit;
-        }
-    
-        // Cargar datos necesarios para el formulario
+
+        // Cargar modelos de usuarios y mesas
         $usersModel = new UserModel();
-        $tablesModel = new TablesModel();
-    
+        $tablesModel = new TableModel();
+
+        $viewmodel = new ReservaModel();
+        $reservation = $viewmodel->getById($id);
+
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-            // Sanitizar entrada
-            $data = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
-            
-            if ($reservationModel->update($id, $data)) {
-                $_SESSION['success_msg'] = 'Reservación actualizada correctamente';
-                header('Location: ' . ROOT_URL . 'reservations');
+            $result = $viewmodel->update($id, $_POST);
+
+            if ($result) {
+                $_SESSION['message'] = 'Reserva actualizada exitosamente.';
+                header('Location: ' . ROOT_URL . 'reservas');
                 exit;
             } else {
-                $_SESSION['error_msg'] = 'Error al actualizar la reservación';
+                $_SESSION['message'] = 'Error al actualizar la reserva. Verifica los datos.';
             }
         }
-    
-        $this->returnView([
+
+        $data = [
             'reservation' => $reservation,
-            'users' => $usersModel->getUsers(),
+            'users' => $usersModel->Index(),
             'tables' => $tablesModel->getAvailableTables()
-        ], true);
+        ];
+
+        $this->returnView($data, true);
     }
 }

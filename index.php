@@ -9,6 +9,7 @@ require('classes/Messages.php');
 require('classes/Bootstrap.php');
 require('classes/Controller.php');
 require('classes/Model.php');
+require('models/table.php');
 
 require('controllers/home.php');
 require('controllers/reservas.php');
@@ -18,7 +19,6 @@ require('controllers/tables.php');
 require('models/home.php');
 require('models/reserva.php');
 require('models/user.php');
-require_once('models/tables.php');
 
 $bootstrap = new Bootstrap($_GET);
 $controller = $bootstrap->createController();
