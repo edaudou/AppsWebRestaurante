@@ -4,23 +4,39 @@ class TableModel extends Model
 
     public function getAllTables()
     {
-        $this->query("SELECT * FROM tables ORDER BY table_number ASC");
+        $this->query("
+            SELECT tables.*, locations.name AS location_name
+            FROM tables
+            LEFT JOIN locations ON tables.location_id = locations.id
+            ORDER BY tables.table_number ASC
+        ");
         return $this->resultSet();
     }
+    
     public function getTables($query = '')
     {
         if (!empty($query)) {
-            $sql = "SELECT * FROM tables 
-                    WHERE table_number LIKE :query 
-                       OR status LIKE :query 
-                       OR CAST(capacity AS CHAR) LIKE :query 
-                    ORDER BY table_number ASC";
+            $sql = "
+                SELECT tables.*, locations.name AS location_name
+                FROM tables
+                LEFT JOIN locations ON tables.location_id = locations.id
+                WHERE tables.table_number LIKE :query 
+                   OR tables.status LIKE :query 
+                   OR CAST(tables.capacity AS CHAR) LIKE :query
+                   OR locations.name LIKE :query
+                ORDER BY tables.table_number ASC
+            ";
             $this->query($sql);
             $this->bind(':query', "%$query%");
         } else {
-            $this->query("SELECT * FROM tables ORDER BY table_number ASC");
+            $this->query("
+                SELECT tables.*, locations.name AS location_name
+                FROM tables
+                LEFT JOIN locations ON tables.location_id = locations.id
+                ORDER BY tables.table_number ASC
+            ");
         }
-
+    
         return $this->resultSet();
     }
 

@@ -53,19 +53,37 @@ $this->returnView(['table' => $table, 'locations' => $locations], true);
 Agrega un select para elegir la ubicación:
 
 php
-<div class="mb-3">
-  <label for="location_id" class="form-label">Ubicación</label>
-  <select name="location" id="location_id" class="form-select form-select-lg" required>
-    <option value="">Seleccione una ubicación</option>
-    <?php foreach ($viewmodel['locations'] as $loc) : ?>
-      <option value="<?php echo $loc['id']; ?>"
-        <?php echo (isset($viewmodel['table']) && $viewmodel['table']['location'] == $loc['id']) ? 'selected' : ''; ?>>
-        <?php echo $loc['name']; ?>
-      </option>
-    <?php endforeach; ?>
-  </select>
-</div>
+        <div class="mb-3">
+          <div class="mb-3">
+            <div class="mb-3">
+              <label for="location_id" class="form-label">Ubicación</label>
+              <select name="location_id" id="location_id" class="form-select form-select-lg" required>
+                <option value="">Seleccione una ubicación</option>
+                <?php foreach ($viewmodel['locations'] as $location): ?>
+                  <option value="<?php echo $location['id']; ?>">
+                    <?php echo $location['name']; ?>
+                  </option>
+                <?php endforeach; ?>
+              </select>
+            </div>
+
+          </div>
 
 🔁 Asegúrate de que estás usando location_id como el nombre de la columna en la base de datos,
 y que el campo location en los formularios esté correctamente vinculado 
 con el nombre del campo en la tabla (tables.location_id).
+
+ Cambios concretos en tu index.php:
+En la parte PHP:
+
+Cambia esta línea:
+
+<p><strong>Localizacion:</strong><?php echo $table['location']; ?> </p>
+
+por esta:
+
+<p><strong>Localización:</strong> <?php echo $table['location_name']; ?> </p>ç
+
+Ya que la variable location la has borrado y buscas por la variable que existe en la otra tabla
+
+Asegurarse que le pones a los tables location con el id que si no no imprime nada el html

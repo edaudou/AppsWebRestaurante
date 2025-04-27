@@ -13,15 +13,15 @@
             <div class="well">
                 <h3>Mesa Nº: <?php echo $table['table_number']; ?></h3>
                 <p><strong>Capacidad:</strong> <?php echo $table['capacity']; ?> personas</p>
-                <p><strong>Localizacion:</strong><?php echo $table['location']; ?> </p>
+                <p><strong>Localización:</strong> <?php echo $table['location_name']; ?></p>
 
                 <p><strong>Estado:</strong> 
                     <span class="badge badge-<?php echo ($table['status'] == 'Disponible') ? 'success' : 'danger'; ?>">
                         <?php echo $table['status']; ?>
                     </span>
                 </p>
-                <a class="btn btn-primary" href="<?php echo ROOT_PATH; ?>tables/edit/<?php echo $table['id']; ?>">Editar</a>
-                <a class="btn btn-danger" href="<?php echo ROOT_PATH; ?>tables/delete/<?php echo $table['id']; ?>" onclick="return confirm('¿Seguro que quieres eliminar esta mesa?');">Eliminar</a>
+                <a class="btn btn-primary" href="<?php echo ROOT_PATH; ?>tables/edit?id=<?php echo $table['id']; ?>">Editar</a>
+                <a class="btn btn-danger" href="<?php echo ROOT_PATH; ?>tables/delete?id=<?php echo $table['id']; ?>" onclick="return confirm('¿Seguro que quieres eliminar esta mesa?');">Eliminar</a>
             </div>
         <?php endforeach; ?>
     </div>
@@ -45,7 +45,7 @@ document.getElementById('searchTable').addEventListener('keyup', function () {
                     output += `<div class="well">
                         <h3>Mesa Nº: ${table.table_number}</h3>
                         <p><strong>Capacidad:</strong> ${table.capacity} personas</p>
-                        <p><strong>Localizacion:</strong> ${table.location} personas</p>
+                        <p><strong>Localización:</strong> ${table.location_name}</p>
                         <p><strong>Estado:</strong> 
                             <span class="badge badge-${table.status === 'Disponible' ? 'success' : 'danger'}">
                                 ${table.status}
@@ -63,6 +63,6 @@ document.getElementById('searchTable').addEventListener('keyup', function () {
         }
     };
 
-    xhr.send('search=' + searchQuery);
+    xhr.send('search=' + encodeURIComponent(searchQuery));
 });
 </script>

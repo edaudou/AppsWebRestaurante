@@ -32,18 +32,20 @@
 
       <!-- Ubicación -->
       <div class="mb-3">
-        <label for="location_id" class="form-label">Ubicación</label>
-        <select name="location" id="location_id" class="form-select form-select-lg" required>
-          <option value="">Seleccione una ubicación</option>
-          <?php foreach ($viewmodel['locations'] as $loc) : ?>
-            <option value="<?php echo $loc['id']; ?>"
-              <?php echo (isset($viewmodel['table']) && $viewmodel['table']['location'] == $loc['id']) ? 'selected' : ''; ?>>
-              <?php echo $loc['name']; ?>
-            </option>
-          <?php endforeach; ?>
-        </select>
-      </div>
+          <div class="mb-3">
+            <div class="mb-3">
+              <label for="location_id" class="form-label">Ubicación</label>
+              <select name="location_id" id="location_id" class="form-select form-select-lg" required>
+                <option value="">Seleccione una ubicación</option>
+                <?php foreach ($viewmodel['locations'] as $location): ?>
+                  <option value="<?php echo $location['id']; ?>">
+                    <?php echo $location['name']; ?>
+                  </option>
+                <?php endforeach; ?>
+              </select>
+            </div>
 
+          </div>
       <!-- Estado -->
       <div class="form-group">
         <label for="status">Estado</label>
