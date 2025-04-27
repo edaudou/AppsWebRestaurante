@@ -9,39 +9,39 @@
       <!-- Número de Mesa -->
       <div class="form-group">
         <label for="table_number">Número de Mesa</label>
-        <input 
-          type="number" 
-          name="table_number" 
-          id="table_number" 
-          class="form-control" 
-          min="1" 
-          required 
-        />
+        <input
+          type="number"
+          name="table_number"
+          id="table_number"
+          class="form-control"
+          min="1"
+          required />
       </div>
 
       <!-- Capacidad -->
       <div class="form-group">
         <label for="capacity">Capacidad</label>
-        <input 
-          type="number" 
-          name="capacity" 
-          id="capacity" 
-          class="form-control" 
-          min="1" 
-          required 
-        />
+        <input
+          type="number"
+          name="capacity"
+          id="capacity"
+          class="form-control"
+          min="1"
+          required />
       </div>
 
       <!-- Ubicación -->
-      <div class="form-group">
-        <label for="location">Ubicación</label>
-        <input 
-          type="text" 
-          name="location" 
-          id="location" 
-          class="form-control" 
-          required 
-        />
+      <div class="mb-3">
+        <label for="location_id" class="form-label">Ubicación</label>
+        <select name="location" id="location_id" class="form-select form-select-lg" required>
+          <option value="">Seleccione una ubicación</option>
+          <?php foreach ($viewmodel['locations'] as $loc) : ?>
+            <option value="<?php echo $loc['id']; ?>"
+              <?php echo (isset($viewmodel['table']) && $viewmodel['table']['location'] == $loc['id']) ? 'selected' : ''; ?>>
+              <?php echo $loc['name']; ?>
+            </option>
+          <?php endforeach; ?>
+        </select>
       </div>
 
       <!-- Estado -->
@@ -55,16 +55,14 @@
       </div>
 
       <!-- Botones -->
-      <input 
-        class="btn btn-primary" 
-        name="submit" 
-        type="submit" 
-        value="Guardar" 
-      />
-      <a 
-        class="btn btn-danger" 
-        href="<?php echo ROOT_PATH; ?>tables"
-      >
+      <input
+        class="btn btn-primary"
+        name="submit"
+        type="submit"
+        value="Guardar" />
+      <a
+        class="btn btn-danger"
+        href="<?php echo ROOT_PATH; ?>tables">
         Cancelar
       </a>
     </form>

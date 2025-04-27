@@ -20,10 +20,10 @@ class TableModel extends Model
         } else {
             $this->query("SELECT * FROM tables ORDER BY table_number ASC");
         }
-        
+
         return $this->resultSet();
     }
-    
+
     public function getAvailableTables()
     {
         $this->query("SELECT * FROM tables WHERE status = 'Disponible' ORDER BY table_number ASC");
@@ -54,7 +54,7 @@ class TableModel extends Model
             !empty($post['table_number']) &&
             !empty($post['capacity']) &&
             !empty($post['status']) &&
-            !empty($post['location'])
+            !empty($post['location_id'])
         ) {
             // Evita duplicados
             if ($this->tableNumberExists($post['table_number'])) {
@@ -62,12 +62,12 @@ class TableModel extends Model
                 return false;
             }
 
-            $this->query("INSERT INTO tables (table_number, capacity, status, location)
-                      VALUES (:table_number, :capacity, :status, :location)");
+            $this->query("INSERT INTO tables (table_number, capacity, status, location_id)
+                      VALUES (:table_number, :capacity, :status, :location_id)");
             $this->bind(':table_number', $post['table_number']);
             $this->bind(':capacity', $post['capacity']);
             $this->bind(':status', $post['status']);
-            $this->bind(':location', $post['location']);
+            $this->bind(':location_id', $post['location_id']);
 
             $this->execute();
 
@@ -97,19 +97,19 @@ class TableModel extends Model
         if (
             !empty($data['table_number']) &&
             !empty($data['capacity']) &&
-            !empty($data['location']) &&
+            !empty($data['location_id']) &&
             !empty($data['status'])
         ) {
 
             $this->query("UPDATE tables SET 
                             table_number = :table_number, 
                             capacity = :capacity, 
-                            location = :location, 
+                            location_id = :location_id, 
                             status = :status 
                           WHERE id = :id");
             $this->bind(':table_number', $data['table_number']);
             $this->bind(':capacity', $data['capacity']);
-            $this->bind(':location', $data['location']);
+            $this->bind(':location_id', $data['location_id']);
             $this->bind(':status', $data['status']);
             $this->bind(':id', $id);
 
@@ -136,5 +136,10 @@ class TableModel extends Model
             return true; // La reserva fue eliminada
         }
         return false; // El ID no es válido
+    }
+    public function getAllLocations()
+    {
+        $this->query("SELECT * FROM locations ORDER BY name ASC");
+        return $this->resultSet();
     }
 }

@@ -9,37 +9,7 @@ class Tables extends Controller
         $this->returnView($tables, true);
     }
 
-    // protected function Add()
-    // {
-    //     if (!isset($_SESSION['is_logged_in'])) {
-    //         header('Location: ' . ROOT_URL . 'tables');
-    //         exit;
-    //     }
-    //     $error = null;
 
-    //     if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    //         $data = [
-    //             'table_number' => $_POST['table_number'],
-    //             'capacity' => $_POST['capacity'],
-    //             'status' => $_POST['status'],
-    //             'location' => $_POST['location'],
-    //         ];
-
-    //         $tableModel = new TableModel();
-    //         if ($tableModel->tableNumberExists($data['table_number'])) {
-    //             $error = "Ya existe una mesa con ese número.";
-    //         } elseif ($tableModel->addTable($data)) {
-    //             $_SESSION['message'] = 'Tabla Añadida exitosamente.';
-
-    //             header('Location: ' . ROOT_URL . 'tables');
-    //             exit;
-    //         } else {
-    //             $error = "Error al agregar la mesa.";
-    //         }
-    //     }
-
-    //     $this->returnView(['error' => $error], true);
-    // }
     protected function add()
     {
         if (!isset($_SESSION['is_logged_in'])) {
@@ -56,8 +26,12 @@ class Tables extends Controller
             }
         }
     
-        $this->returnView([], true);
+        // Cargar ubicaciones para el formulario
+        $locations = $viewmodel->getAllLocations();
+    
+        $this->returnView(['locations' => $locations], true);
     }
+    
     
 	public function searchTables()
     {
@@ -98,10 +72,12 @@ class Tables extends Controller
             }
         }
     
-        $this->returnView(['table' => $table], true);
+        // Cargar ubicaciones para el formulario
+        $locations = $model->getAllLocations();
+    
+        $this->returnView(['table' => $table, 'locations' => $locations], true);
     }
     
-
 
 	protected function delete() {
         if (!isset($_SESSION['is_logged_in'])) {

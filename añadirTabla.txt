@@ -1,0 +1,71 @@
+🛠️ PARTE 1: Cambios en la base de datos
+1. Crear nueva tabla locations
+sql
+
+
+CREATE TABLE locations (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(50) NOT NULL
+);
+2. Insertar los valores Interior y Exterior
+sql
+
+
+INSERT INTO locations (name) VALUES ('Interior'), ('Exterior');
+
+3. Agregar columna a la tabla tables para referenciar la ubicación
+sql
+
+
+ALTER TABLE tables ADD location_id INT;
+
+ALTER TABLE tables
+ADD CONSTRAINT fk_location
+FOREIGN KEY (location_id) REFERENCES locations(id);
+
+
+
+🧠 PARTE 2: Cambios en el modelo PHP
+🛠️ 2. Actualizar el modelo TableModel
+Añade un método para obtener las ubicaciones (locations):
+
+php
+
+public function getAllLocations()
+{
+    $this->query("SELECT * FROM locations ORDER BY name ASC");
+    return $this->resultSet();
+}
+
+3. Modificar el controlador Tables
+
+En add():
+Modifica el returnView para pasar las ubicaciones a la vista:
+$locations = $viewmodel->getAllLocations();
+$this->returnView(['locations' => $locations], true);
+
+edit():
+Haz lo mismo para que se vean las ubicaciones al editar:
+$locations = $model->getAllLocations();
+$this->returnView(['table' => $table, 'locations' => $locations], true);
+
+🖥️ 4. Actualizar la vista add y edit
+Agrega un select para elegir la ubicación:
+
+php
+<div class="mb-3">
+  <label for="location_id" class="form-label">Ubicación</label>
+  <select name="location" id="location_id" class="form-select form-select-lg" required>
+    <option value="">Seleccione una ubicación</option>
+    <?php foreach ($viewmodel['locations'] as $loc) : ?>
+      <option value="<?php echo $loc['id']; ?>"
+        <?php echo (isset($viewmodel['table']) && $viewmodel['table']['location'] == $loc['id']) ? 'selected' : ''; ?>>
+        <?php echo $loc['name']; ?>
+      </option>
+    <?php endforeach; ?>
+  </select>
+</div>
+
+🔁 Asegúrate de que estás usando location_id como el nombre de la columna en la base de datos,
+y que el campo location en los formularios esté correctamente vinculado 
+con el nombre del campo en la tabla (tables.location_id).
